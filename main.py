@@ -24,13 +24,14 @@ def format_bars(symbol: str, name: str, bars: list[dict]) -> str:
     )
     lines = [title, header]
     for bar in bars:
+        change = "—" if bar["change_pct"] is None else f"{bar['change_pct']:+.2f}%"
         lines.append(
             _pad(bar["date"], 13)
             + _pad(f"{bar['open']:.2f}", 11)
             + _pad(f"{bar['close']:.2f}", 11)
             + _pad(f"{bar['high']:.2f}", 11)
             + _pad(f"{bar['low']:.2f}", 11)
-            + f"{bar['change_pct']:+.2f}%"
+            + change
         )
     return "\n".join(lines)
 

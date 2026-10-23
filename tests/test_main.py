@@ -24,3 +24,8 @@ def test_format_bars_contains_data():
     assert "2026-10-22" in text
     assert "+1.23%" in text
     assert "-0.56%" in text
+
+
+def test_format_bars_handles_missing_change_pct():
+    text = format_bars("600519", "贵州茅台", [make_bar(change_pct=None)])
+    assert "—" in text
