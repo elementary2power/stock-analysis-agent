@@ -1,4 +1,4 @@
-from main import format_bars
+from main import format_bars, format_prediction
 
 
 def make_bar(**overrides):
@@ -29,3 +29,25 @@ def test_format_bars_contains_data():
 def test_format_bars_handles_missing_change_pct():
     text = format_bars("600519", "贵州茅台", [make_bar(change_pct=None)])
     assert "—" in text
+
+
+def test_format_prediction():
+    prediction = {
+        "direction": "看涨",
+        "score": 6.0,
+        "confidence": 60.0,
+        "reasons": ["5日均线高于10日均线", "放量上涨"],
+    }
+    text = format_prediction(prediction)
+    assert "看涨" in text
+    assert "6/10" in text
+    assert "60%" in text
+    assert "5日均线高于10日均线" in text
+    assert "不构成投资建议" in text
+
+
+def test_format_prediction_no_reasons():
+    prediction = {"direction": "震荡", "score": 0.0, "confidence": 0.0, "reasons": []}
+    text = format_prediction(prediction)
+    assert "震荡" in text
+    assert "多空信号不明显" in text

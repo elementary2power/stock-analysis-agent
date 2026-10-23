@@ -1,4 +1,5 @@
 from stock_analysis_agent import __version__
+from stock_analysis_agent.analysis.trend import predict_trend
 from stock_analysis_agent.agent import StockAnalysisAgent
 from stock_analysis_agent.data.market import normalize_symbol
 
@@ -36,6 +37,20 @@ def format_bars(symbol: str, name: str, bars: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def format_prediction(prediction: dict) -> str:
+    """将次日趋势预测结果格式化为文本。"""
+    lines = [
+        "—— 明日趋势预测 ——",
+        f"方向: {prediction['direction']}（综合得分 {prediction['score']:.0f}/10，置信度 {prediction['confidence']:.0f}%）",
+    ]
+    reasons = prediction["reasons"]
+    lines.extend(f"  · {reason}" for reason in reasons)
+    if not reasons:
+        lines.append("  · 多空信号不明显")
+    lines.append("注: 基于简单技术指标打分模型，仅供参考，不构成投资建议")
+    return "\n".join(lines)
+
+
 def main():
     print(f"stock-analysis-agent v{__version__}")
     symbol = input("请输入股票代码（如 600519，回车退出）: ").strip()
@@ -56,6 +71,7 @@ def main():
         print("未查询到行情数据，请确认股票代码是否正确")
         return
     print(format_bars(code, stock_name, bars))
+    print(format_prediction(predict_trend(bars)))
 
 
 if __name__ == "__main__":

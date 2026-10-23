@@ -84,3 +84,12 @@ def test_recent_daily_returns_name_and_bars(monkeypatch):
     assert name == "贵州茅台"
     assert len(bars) == 2
     assert bars[0]["close"] == 1
+
+
+def test_predict_trend_with_data(monkeypatch):
+    monkeypatch.setattr(
+        "stock_analysis_agent.agent.get_recent_daily",
+        lambda symbol, days=10: ("贵州茅台", make_bars([100 + i for i in range(10)])),
+    )
+    result = StockAnalysisAgent().predict_trend("600519")
+    assert result["direction"] == "看涨"
